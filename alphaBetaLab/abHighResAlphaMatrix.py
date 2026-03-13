@@ -24,7 +24,7 @@ class abHighResAlphaMatrix:
     self.polygon = None
     self.polygonCrds = []
     self.dx = np.mean(xs[1:] - xs[:-1]) if len(xs) > 1 else None
-    self.dy = np.mean(ys[1:] - ys[:-1]) if len(xs) > 1 else None
+    self.dy = np.mean(ys[1:] - ys[:-1]) if len(ys) > 1 else None
     if self.dx is None or self.dy is None:
       self.xs = np.array([])
       self.ys = np.array([])
