@@ -122,7 +122,7 @@ class testIntegrity(unittest.TestCase):
     # DEFINITION OF LOW RES GRID
     x0 = 4.2; nx = 13; dx = 0.8; y0 = 29.2; ny = 12; dy = 0.8; zbottom = -500
     # grid
-    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False, nParWorker=nParWorker)
+    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False)
     cstClDet = self.getMockHiResAlphaMtxAndCstCellDet()
     grid = rectGridBuilder.buildGrid(hrmtx, cstClDet)
     
@@ -182,7 +182,7 @@ class testIntegrity(unittest.TestCase):
     # DEFINITION OF LOW RES GRID
     x0 = 4.2; nx = 13; dx = 0.8; y0 = 29.2; ny = 12; dy = 0.8; zbottom = -500
     # grid
-    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False, nParWorker=nParWorker)
+    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False)
     cstClDet = self.getMockHiResAlphaMtxAndCstCellDet()
     grid = rectGridBuilder.buildGrid(hrmtx, cstClDet)
     
@@ -231,7 +231,7 @@ class testIntegrity(unittest.TestCase):
     # DEFINITION OF LOW RES GRID
     x0 = 4.2; nx = 13; dx = 0.8; y0 = 29.2; ny = 12; dy = 0.8; zbottom = -500
     # grid
-    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False, nParWorker=nParWorker)
+    rectGridBuilder = abRectangularGridBuilder(x0, y0, dx, dy, nx, ny, minXYIsCentroid=False)
     cstClDet = self.getMockHiResAlphaMtxAndCstCellDet()
     grid = rectGridBuilder.buildGrid(hrmtx, cstClDet)
     
