@@ -66,6 +66,8 @@ class abWwiiiAlphaBetaLoader():
         beta.append(b)
       beta = np.array(beta)
       o.betaList.append(beta)
+    
+    fl.close()
       
     return o
 

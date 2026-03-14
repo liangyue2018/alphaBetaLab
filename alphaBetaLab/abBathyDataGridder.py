@@ -226,6 +226,7 @@ class abBathyDataGridder:
     p = mp.Pool(self.nParallelWorker)
     if self.nParallelWorker > 1:
       intpPatches = p.imap(_intpOnePatch, patchGenerator)
+      p.close()
     else:
       intpPatches = map(_intpOnePatch, patchGenerator)
     for pgrdx, pgrdy, pgrdz, iix, iiy in intpPatches:
@@ -236,8 +237,6 @@ class abBathyDataGridder:
       indxy = np.where(np.in1d(grdy, pgrdy))[0]
       ix, iy = np.meshgrid(indxx, indxy)
       grdz[iy, ix] = pgrdz
-    
-    p.close()
     self._print(' ... done')
     self.doNanLandCells(grdx, grdy, grdz)
     return grdx, grdy, grdz
@@ -259,6 +258,7 @@ class abBathyDataGridder:
     grdzflatten = grdz.flatten()
     if self.nParallelWorker > 1:
       inLandIxIy = p.imap(_computePointInLand, zip(ixcs, iycs, grdzflatten))
+      p.close()
     else:
       inLandIxIy = map(_computePointInLand, zip(ixcs, iycs, grdzflatten))
     ntot = len(grdzflatten)
@@ -272,7 +272,6 @@ class abBathyDataGridder:
       if inLand:
         landxindxs.append(ix)
         landyindxs.append(iy)
-    p.close()
     return landxindxs, landyindxs
 
 

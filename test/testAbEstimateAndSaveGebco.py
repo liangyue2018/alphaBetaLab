@@ -13,7 +13,7 @@ from alphaBetaLab import abTriangularMesh
 class testAbEstimateAndSaveGebco(unittest.TestCase):
 
    
-  def _SLOW_testEstimateAndSaveTriangular(self):
+  def testEstimateAndSaveTriangular(self):
     mdldir = os.path.dirname( os.path.abspath(__file__) )
     mshFilePath = os.path.join(mdldir, 'triangularMeshTest/redSea.msh')
     gbcFilePath = os.path.join(mdldir, 'gebco_test.nc')
@@ -44,7 +44,7 @@ class testAbEstimateAndSaveGebco(unittest.TestCase):
         pass
 
 
-  def _testEstimateAndSaveRegular(self):
+  def testEstimateAndSaveRegular(self):
     # importing from alphaBetaLab the needed components
     
     # definition of the spectral grid
