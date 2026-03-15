@@ -136,6 +136,8 @@ class abSingleCellBetaEstimator:
         pys = [miny, miny, maxy, maxy, miny]
       pxy = [p for p in zip(pxs, pys)]
       poly = g.Polygon(pxy)
+      if not cell.intersects(poly):
+        continue
       subcell = cell.intersection(poly)
       if abutls.isClose(subcell.area, 0.) or (prevsubcell and abutls.isClose(prevsubcell.area, subcell.area)):
         #the trasverse polygon does not cross the cell yet

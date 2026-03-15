@@ -38,28 +38,27 @@ class abCellsEstimatorParallel:
     # creating the parallel pool, otherwise the system won't pickle it.
     global cellEst
     cellEst = self.cellEst
-    cellEst._print('initializing parallel pool')
+    cellEst._print('    > initializing parallel pool ...')
     p = mp.Pool(self.nParWorker)
-    cellEst._print('... done')
+    cellEst._print('    > ... done')
     self.procPool = p
     return p
 
   def _finalizeParEnv(self):
     cellEst = self.cellEst
-    cellEst._print('finalizing parallel pool')
+    cellEst._print('\n    > finalizing parallel pool ...')
     self.procPool.close()
     del self.procPool
     self.procPool = None
-    cellEst._print('... done')
+    cellEst._print('    > ... done')
 
   def computeLocalAlphaBeta(self):
     cellEst = self.cellEst
-    cellEst._print('computing local alpha-beta ...')
+    cellEst._print('Computing local alpha-beta ...')
     allGeoCoords = cellEst.grid.getGeoCoords()
     ncells = float(len(cellEst.grid.cells))
 
-    cellEst._print('  running parallel jobs and')
-    cellEst._print('  collecting output to the standard structure')
+    cellEst._print('    > running parallel jobs and collecting output to the standard structure')
     alphaBetaOutput = cellEst.initLocAlphaBetaOutput()
 
     p = self._initParEnv()
@@ -74,27 +73,25 @@ class abCellsEstimatorParallel:
 
     self._finalizeParEnv()
 
-    cellEst._print('  ... done')
     coords, geoCoords, alphas, betas, sizes, totallyBlockedCells, obstrcells = alphaBetaOutput
 
     cellEst.totallyBlockedCells = totallyBlockedCells
-    cellEst._print('... all done')
-    cellEst._print('')
+    cellEst._print('    > all done')
+    cellEst._print()
 
     if self.longBreakWaterAdjust:
       alphas, betas = cellEst._longBreakWaterLocAdjust(obstrcells, cellEst.grid, cellEst.highResCoastalPolygons, alphas, betas, parallel = True, nParallelWorker = self.nParWorker)    
 
     cellEst.localAlphasReady = True
     return coords, geoCoords, alphas, betas, sizes
-    
+
   def computeShadowAlphaBeta(self):
     cellEst = self.cellEst
-    cellEst._print('computing shadow alpha-beta ...')
+    cellEst._print('Computing shadow alpha-beta ...')
     allGeoCoords = cellEst.grid.getGeoCoords()
     ncells = float(len(cellEst.grid.cells))
 
-    cellEst._print('  running parallel jobs and')
-    cellEst._print('  collecting output to the standard structure')
+    cellEst._print('    > running parallel jobs and collecting output to the standard structure')
     alphaBetaOutput = cellEst.initShdAlphaBetaOutput()
     
     cellEst.grid.buildNeighCache();
@@ -115,10 +112,9 @@ class abCellsEstimatorParallel:
     self._finalizeParEnv()
 
     coords, geoCoords, alphas, betas, sizes = alphaBetaOutput
-    cellEst._print('  ... done')
 
-    cellEst._print('... all done')
-    cellEst._print('')
+    cellEst._print('    > all done')
+    cellEst._print()
     return coords, geoCoords, alphas, betas, sizes
 
 

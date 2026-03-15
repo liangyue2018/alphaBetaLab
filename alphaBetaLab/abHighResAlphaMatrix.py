@@ -106,7 +106,7 @@ class abHighResAlphaMatrix:
       alps = self.alphas[ymtx, xmtx]
     aMtx = abHighResAlphaMatrix(submtxxs, submtxys, alps, freqs)
     singlePolygon = polygon.boundary.__class__ == g.LineString
-    aMtx.polyon = polygon
+    aMtx.polygon = polygon
     try:
       polybnd = polygon.boundary.geoms
     except:

@@ -1,11 +1,10 @@
 import numpy as np
-import matplotlib
 import time
 from matplotlib.gridspec import GridSpec
 from matplotlib import pyplot as plt
 from mpl_toolkits import basemap
 
-fname = 'Global.obstr_lev1'
+fname = 'g_glb150.obst'
 mskFName = 'g_glb150.mask'
 lonlims = (-99, -58)
 latlims = (7, 32)
@@ -14,7 +13,7 @@ landColor = 'lightgray'
 
 obsAll = np.loadtxt(fname)
 mskAll = np.loadtxt(mskFName)
-nlat = obsAll.shape[0]/2
+nlat = int(obsAll.shape[0]/2)
 
 allObsX = obsAll[:nlat, :]
 allObsY = obsAll[nlat:, :]

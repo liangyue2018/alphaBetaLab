@@ -58,10 +58,10 @@ class abCellsEstimator:
 
   def _progress(self, percent):
     if self.verbose:
-      sys.stdout.write('\r  progress: {:2.1f} %'.format(percent))
+      sys.stdout.write(f"\r    > progress: {percent:2.1f}%")
       sys.stdout.flush()
 
-  def _print(self, msg = ''):
+  def _print(self, msg=''):
     if self.verbose:
       print(msg)
 
@@ -197,7 +197,7 @@ class abCellsEstimator:
       except:
         pass
       if not len(cellNeighbors):
-        self._print(' cell ' + str(crd) + ' has no neighbors. Skipping')
+        self._print(f"\r    Skip cell {crd} due to no neighbors")
         return False, None, None, None, None, None
         
       neighTotPoly = cell
@@ -206,7 +206,7 @@ class abCellsEstimator:
       if neighTotPoly.__class__ != g.Polygon:
         neighTotPoly = neighTotPoly.convex_hull - cell
       if neighTotPoly.__class__ != g.Polygon:
-        self._print('cell ' + str(crd) + ': impossible to estimate neighboring polygon. Skipping')
+        self._print(f"\r    Skip cell {crd} due to impossible neighboring polygon")
         return False, None, None, None, None, None
       totPolyAlphaMtx = self.alphaMtx.getAlphaSubMatrix(neighTotPoly)
       shadAlphaBetaExist =  not totPolyAlphaMtx.isNull() and not totPolyAlphaMtx.empty()

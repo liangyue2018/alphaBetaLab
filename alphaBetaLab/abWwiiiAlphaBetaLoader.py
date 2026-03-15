@@ -29,9 +29,9 @@ class abWwiiiAlphaBetaLoader():
     npt = int(fl.readline().strip(' \n\r\t'))
     for ipt in range(npt):
       ln = fl.readline().strip(' \n\r\t')
-      mtch = re.match('(.*) ([-0-9\.]*), ([-0-9\.]*)', ln)
+      mtch = re.match('^\$ ilon ilat of the cell\. lon: (-?\d+\.\d+), (lat: )?(-?\d+\.\d+).*', ln)
       grps = mtch.groups()
-      lon = float(grps[-2])
+      lon = float(grps[-3])
       lat = float(grps[-1])
       o.geoCoords.append((lon, lat))
 

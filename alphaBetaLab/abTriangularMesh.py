@@ -35,7 +35,7 @@ class _abTriMeshSpec:
     """
     getCellPolygons: returns an approximate cental median cell for each non-land-boundary node
     """
-    print('        building the triangular mesh polygons (may take a while ...)')
+    print('Building the triangular mesh polygons (median dual cells) for each node. This can take a while ...')
     plIds = list(self.connectionPolygons.keys())
     plIds.sort()
     centroidsByNode = {}

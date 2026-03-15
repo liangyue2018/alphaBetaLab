@@ -164,7 +164,7 @@ def abEstimateAndSaveTriangularEtopo1(dirs, freqs, gridName, triMeshSpec, etopo1
   llcrnr = getOption(abOptions, 'llcrnr', None)
   urcrnr = getOption(abOptions, 'urcrnr', None)
   zlim = -.1
-  print('loading etopo1 bathymetry ...')
+  print('Loading etopo1 bathymetry ...')
   x, y, z = abEtopo1BathyLoader.loadBathy(etopo1FilePath, llcrnr, urcrnr)
   alphamtx = np.ones(z.shape)
   alphamtx[z > zlim] = 0
@@ -319,7 +319,7 @@ def _abEstimateAndSave(dirs, freqs, gridName, grid, highResolutionBathyMatrix, o
   finally:
     timeElapsed = time.time() - t
     print('Complete. Time elapsed in seconds: ' + str(timeElapsed))
-    print
+    print()
     printOpts()
 
 

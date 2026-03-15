@@ -20,10 +20,9 @@ triMeshSpec = triMeshSpecFromMshFile(mshfile)
 etopoFilePath = '/home/lmentaschi/usr/WaveWatchIII/gridgen1.1/reference_data/etopo1.nc'
 
 # output directory
-outputDestDir = './output/'
+outputDestDir = 'output'
 
 # number of cores for parallel computing
-nParWorker = 12
 nParWorker = 4
 
 # this option indicates that the computation should be skipped for cells smaller than 3 km
