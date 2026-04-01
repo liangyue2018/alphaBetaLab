@@ -166,7 +166,7 @@ class abBathyDataGridder:
 
   def _progress(self, percent):
     if self.verbose:
-      sys.stdout.write('\r  progress: {:2.1f} %'.format(percent))
+      sys.stdout.write('\r  progress: {:.1f} %'.format(percent))
       sys.stdout.flush()
 
 

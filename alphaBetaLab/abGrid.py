@@ -147,7 +147,7 @@ class _abGrid:
           clsCrd1s.append(clsCrd1s[icell])
           cls.append(gm.Polygon(clcrdNew))
 
-    print('Building neighbor cells cache. This can take a while ...')
+    print('\rBuilding neighbor cells cache. This can take a while ...')
     global cls, clsCrd1s, clsCrdss, maxDiams, nclCrd0, nclCrd1
     cls = [c for c in self.cells]
     clsCrd1s = self.cellCoordinates
@@ -171,7 +171,7 @@ class _abGrid:
           
     for clCrds, cneighs_ in neighCellsGen:
       if ic % max(1, (lc // 1000)) == 0:
-        sys.stdout.write(f"\r    > progress: {float(ic) / lc * 100:2.1f}%")
+        sys.stdout.write(f"\r    > progress: {float(ic + 1) / lc * 100:.1f}%")
         sys.stdout.flush()
       ic += 1
       cneighs = cch.get(clCrds, [])
@@ -187,6 +187,7 @@ class _abGrid:
       del pl
 
     print('\n    > neighborhood cells cache built')
+    print()
     self._neigCache = cch
 
 
@@ -207,9 +208,9 @@ class _abGrid:
     
     ncell = len(cells)
     if self.nParWorker > 1:
-      print('    initializing parallel environment ..')
+      print('    > initializing parallel pool ...')
       pl = mp.Pool(self.nParWorker)
-      print('      ... done')
+      print('    > ... done')
       isLandOrCoastalCellGen = pl.imap(_cellIsOnLandOrCoastal, zip(cells, cellBnd, cellSfc, range(ncell)))
     else:
       isLandOrCoastalCellGen = map(_cellIsOnLandOrCoastal, zip(cells, cellBnd, cellSfc, range(ncell)))

@@ -42,12 +42,13 @@ def regularGridSpecWW3(xmin=0, dx=0, nx=0, ymin=0, dy=0, ny=0, maskFilePath=''):
   fl = open(maskFilePath)
   ix = 0
   for ln in fl:
-    if ix >= nx:
+    if ix >= ny:
       raise Exception('regularGridSpecWWIII: wrong mask file: lon dimension does not match')
     vlStrs = ln.strip(' \n').split()
     vls = [int(s) for s in vlStrs]
     mask[ix, :] = vls
     ix += 1
+  fl.close()
   rs.mask = mask
   return rs
 
@@ -75,7 +76,7 @@ def abEstimateAndSaveRegularEtopo1(dirs, freqs, gridName, regularGridSpec, etopo
   llcrnr = getOption(abOptions, 'llcrnr', None)
   urcrnr = getOption(abOptions, 'urcrnr', None)
   zlim = -.1
-  print('loading etopo1 bathymetry ...')
+  print('Loading etopo1 bathymetry ...')
   x, y, z = abEtopo1BathyLoader.loadBathy(etopo1FilePath, llcrnr, urcrnr)
   alphamtx = np.ones(z.shape, dtype=bool)
   alphamtx[z > zlim] = 0
@@ -192,11 +193,13 @@ def abEstimateAndSaveTriangularGebco(dirs, freqs, gridName, triMeshSpec, etopo1F
   llcrnr = getOption(abOptions, 'llcrnr', None)
   urcrnr = getOption(abOptions, 'urcrnr', None)
   zlim = -.1
-  print('loading gebco bathymetry ...')
+  print('Loading gebco bathymetry ...')
   x, y, z = abGebcoBathyLoader.loadBathy(etopo1FilePath, llcrnr, urcrnr)
   alphamtx = np.ones(z.shape)
   alphamtx[z > zlim] = 0
   highResolutionBathyMatrix = abHighResAlphaMatrix.abHighResAlphaMatrix(x, y, alphamtx)
+  if grid.wrapAroundDateline:
+    highResolutionBathyMatrix.wrapAroundDateline()
 
 
   _abEstimateAndSave(dirs, freqs, gridName, grid, highResolutionBathyMatrix, outputDirectory, nParWorker, abOptions)
@@ -312,13 +315,12 @@ def _abEstimateAndSave(dirs, freqs, gridName, grid, highResolutionBathyMatrix, o
   
     if savePropSchemeFile:
       stdObstrFileName = gridName + '.obstr_lev1'
-      stdObstrFilePath = os.path.join(propSchemeObstrDestDir, stdObstrFileName)
+      stdObstrFilePath = os.path.join(outputDirectory, stdObstrFileName)
       propSchObstrFileSaver = abWwiiiPropSchObstrFileSaver.\
                abWwiiiPropSchObstrFileSaver(grid, dirs, locCoords, locAlphas)
       propSchObstrFileSaver.saveFile(stdObstrFilePath)
   finally:
-    timeElapsed = time.time() - t
-    print('Complete. Time elapsed in seconds: ' + str(timeElapsed))
+    print(f"Complete. Time elapsed in seconds: {time.time() - t:.2f}")
     print()
     printOpts()
 

@@ -59,5 +59,3 @@ class abRectangularGridBuilder:
     grd.nx = self.nx
     grd.ny = self.ny
     return grd
-
-

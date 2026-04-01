@@ -51,6 +51,7 @@ class abCellsEstimatorParallel:
     del self.procPool
     self.procPool = None
     cellEst._print('    > ... done')
+    cellEst._print()
 
   def computeLocalAlphaBeta(self):
     cellEst = self.cellEst
@@ -76,8 +77,6 @@ class abCellsEstimatorParallel:
     coords, geoCoords, alphas, betas, sizes, totallyBlockedCells, obstrcells = alphaBetaOutput
 
     cellEst.totallyBlockedCells = totallyBlockedCells
-    cellEst._print('    > all done')
-    cellEst._print()
 
     if self.longBreakWaterAdjust:
       alphas, betas = cellEst._longBreakWaterLocAdjust(obstrcells, cellEst.grid, cellEst.highResCoastalPolygons, alphas, betas, parallel = True, nParallelWorker = self.nParWorker)    
@@ -113,8 +112,6 @@ class abCellsEstimatorParallel:
 
     coords, geoCoords, alphas, betas, sizes = alphaBetaOutput
 
-    cellEst._print('    > all done')
-    cellEst._print()
     return coords, geoCoords, alphas, betas, sizes
 
 

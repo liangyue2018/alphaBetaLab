@@ -9,7 +9,6 @@ from . import abUpstreamPolyEstimator as upe
 from . import abCellSize as csEst
 from . import abUtils, abAlphaBetaRecalibrator
 from . import abLongBreakWaterLocAlphaAdjust as bwAdj
-#import cProfile
 from .abOptionManager import getOption
 
 np.seterr(divide='ignore')
@@ -54,11 +53,11 @@ class abCellsEstimator:
     cgMax = 9.8/(4.*np.pi*min(freqs))
     self.minSizeKm = getOption(options, 'minSizeKm', cgMax*timeStep/1000.)
     if self.longBreakWaterAdjust and len(self.highResCoastalPolygons) == 0:
-      raise abException("abCellsEstimator: if longBreakWaterAdjust is enabled, highResCoastalPolygons should not be empty")
+      raise abUtils.abException("abCellsEstimator: if longBreakWaterAdjust is enabled, highResCoastalPolygons should not be empty")
 
   def _progress(self, percent):
     if self.verbose:
-      sys.stdout.write(f"\r    > progress: {percent:2.1f}%")
+      sys.stdout.write(f"\r    > progress: {percent:.1f}%")
       sys.stdout.flush()
 
   def _print(self, msg=''):
@@ -147,30 +146,27 @@ class abCellsEstimator:
         totallyBlockedCells[cltpl] = cell
 
   def _longBreakWaterLocAdjust(self, obstrCells, grid, highResCoastalPolygons, alphas, betas, parallel = True, nParallelWorker = 4):
-    self._print('reviewing estimated local alphas in presence of long breakwaters ...')
+    self._print('Reviewing estimated local alphas in presence of long breakwaters ...')
     lbwLocAlphaAdjust = bwAdj.abLongBreakWaterLocAlphaAdjustAllCells(obstrCells, grid, highResCoastalPolygons, self.dirs, alphas, betas, parallel, nParallelWorker)
     adjAlphas, adjBetas = lbwLocAlphaAdjust.reviewLocalAlpha()
-    self._print('... done')
-    self._print('')
+    self._print('    > ... done')
+    self._print()
     return adjAlphas, adjBetas
 
   def computeLocalAlphaBeta(self):
     alphaBetaOutput = self.initLocAlphaBetaOutput()
 
-    self._print()
-    self._print('computing local')
+    self._print('Computing local alpha-beta ...')
     allGeoCoords = self.grid.getGeoCoords()
-    for i, crd, geoCrd, cell in zip(range(len(allGeoCoords)),\
-                    self.grid.cellCoordinates, allGeoCoords, self.grid.cells):
-      prog = float(i)/len(allGeoCoords)*100.
+    for i, crd, geoCrd, cell in zip(range(len(allGeoCoords)), self.grid.cellCoordinates, allGeoCoords, self.grid.cells):
+      prog = float(i + 1) / len(allGeoCoords) * 100.
       self._progress(prog)
       singleCellLocAlphaBetaOutput = self.computeLocalOneCell(crd, geoCrd, cell)
       self.updateLocAlphaBetaOutput(alphaBetaOutput, singleCellLocAlphaBetaOutput)
     coords, geoCoords, alphas, betas, sizes, totallyBlockedCells, obstrcells = alphaBetaOutput
     
     self.totallyBlockedCells = totallyBlockedCells
-    self._print()
-    self._print('... done')
+    self._print('\n    > ... done')
     self._print()
 
     if self.longBreakWaterAdjust:
@@ -197,7 +193,7 @@ class abCellsEstimator:
       except:
         pass
       if not len(cellNeighbors):
-        self._print(f"\r    Skip cell {crd} due to no neighbors")
+        self._print(f"\r    > skip cell {crd} due to no neighbors")
         return False, None, None, None, None, None
         
       neighTotPoly = cell
@@ -206,7 +202,7 @@ class abCellsEstimator:
       if neighTotPoly.__class__ != g.Polygon:
         neighTotPoly = neighTotPoly.convex_hull - cell
       if neighTotPoly.__class__ != g.Polygon:
-        self._print(f"\r    Skip cell {crd} due to impossible neighboring polygon")
+        self._print(f"\r    > skip cell {crd} due to impossible neighboring polygon")
         return False, None, None, None, None, None
       totPolyAlphaMtx = self.alphaMtx.getAlphaSubMatrix(neighTotPoly)
       shadAlphaBetaExist =  not totPolyAlphaMtx.isNull() and not totPolyAlphaMtx.empty()
@@ -302,18 +298,16 @@ class abCellsEstimator:
 
     try:
       alphaBetaOutput = self.initShdAlphaBetaOutput()
-      self._print()
-      self._print('computing shadow')
+      self._print('Computing shadow alpha-beta ...')
       allGeoCoords = self.grid.getGeoCoords()
-      for i, crd, geoCrd, cell in zip(range(len(allGeoCoords)),\
-                      self.grid.cellCoordinates, allGeoCoords, self.grid.cells):
-        prog = float(i)/len(allGeoCoords)*100.
+      for i, crd, geoCrd, cell in zip(range(len(allGeoCoords)), self.grid.cellCoordinates, allGeoCoords, self.grid.cells):
+        prog = float(i + 1) / len(allGeoCoords) * 100.
         self._progress(prog)
         
         singleCellShdAlphaBetaOutput = self.computeShadowOneCell(crd, geoCrd, cell)
         self.updateShdAlphaBetaOutput(alphaBetaOutput, singleCellShdAlphaBetaOutput)
-      self._print()
-      self._print('... done')
+
+      self._print('\n    > ... done')
       self._print()
       return alphaBetaOutput
     except:

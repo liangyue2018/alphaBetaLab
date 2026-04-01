@@ -1,0 +1,14 @@
+name: alphaBetaLab
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy=1.24
+  - shapely=2.0.1
+  - matplotlib=3.5.3
+  - netcdf4=1.6.0
+  - scipy=1.9.1
+  - cartopy=0.21.1
+  - pandas=1.4.3
+  - fiona=1.9.1
+  - basemap=1.3.6
