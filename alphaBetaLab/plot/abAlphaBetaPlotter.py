@@ -59,7 +59,7 @@ class abAlphaBetaSingleCellPlotter:
 class abAlphaBetaMeshPlotter:
 
   def __init__(self, coords, geoCoords, alphaList, betaList, mesh, dirs, lonlims=None, latlims=None, 
-               cstLineRes='auto', polarDiagLatSize=0.6, margin=1, verbose=True):
+               cstLineRes='auto', polarDiagLatSize=1, margin=1, verbose=True):
     """
     abAlphaBetaMeshPlotter: class to plot a mesh, and on each cell a polar plot of alpha and beta.
     It works only for alpha/beta changing with the sole direction, not with frequency.
@@ -210,7 +210,7 @@ class abAlphaBetaMeshPlotter:
         if plotPie:
           _, y0, _, y1 = cellPoly.bounds
           yspan = y1 - y0
-          axDiagLatSize = yspan * 1.25 if yspan > 0 else self.polarDiagLatSize
+          axDiagLatSize = yspan * self.polarDiagLatSize
           axDiagLonSize = axDiagLatSize * (self.figsize[1] / self.figsize[0])
 
           if geo:
