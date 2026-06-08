@@ -119,10 +119,13 @@ class abAlphaBetaMeshPlotter:
     if lonlims is None or latlims is None:
       lonlims, latlims = self._getLonLatLims()
     ax.set_extent([lonlims[0], lonlims[1], latlims[0], latlims[1]], crs=ccrs.PlateCarree())
+
     sea = cfeature.NaturalEarthFeature('physical', 'ocean', '10m', facecolor=self.seaColor, edgecolor='none', zorder=0)
     ax.add_feature(sea)
+
     lnd = cfeature.NaturalEarthFeature('physical', 'land', '10m', facecolor=self.landColor, edgecolor='none', zorder=1)
     lndmsk = ax.add_feature(lnd)
+
     ax.coastlines(resolution=self.cstLineRes, linewidth=0.5, zorder=2)
     return lndmsk
 
@@ -182,8 +185,6 @@ class abAlphaBetaMeshPlotter:
       lon, lat = geocrd[0], geocrd[1]
       if geo:
         lon = self._wrapLonToCentral(lon, clon)
-        if lon < lonlims[0]:
-          lon += 360
 
       plotPie = (
         (lonlims[0] + mrgn <= lon <= lonlims[1] - mrgn) and 
@@ -211,7 +212,7 @@ class abAlphaBetaMeshPlotter:
           _, y0, _, y1 = cellPoly.bounds
           yspan = y1 - y0
           axDiagLatSize = yspan * self.polarDiagLatSize
-          axDiagLonSize = axDiagLatSize * (self.figsize[1] / self.figsize[0])
+          axDiagLonSize = axDiagLatSize
 
           if geo:
             lon, lat = mainAx.projection.transform_point(geocrd[0], geocrd[1], ccrs.PlateCarree())
@@ -239,13 +240,10 @@ class abAlphaBetaMeshPlotter:
     return fig, mainAx, axs, lndmsk
 
   def plotLegend(self, ax, xn, yn, figLegendSize=0.15, fontsize=10):
-    axDiagLatSize = figLegendSize
-    axDiagLonSize = figLegendSize * self.figsize[1] / self.figsize[0]
-
-    bbox = [xn - axDiagLonSize / 2., 
-            yn - axDiagLatSize / 2., 
-            axDiagLonSize, 
-            axDiagLatSize]
+    bbox = [xn - figLegendSize / 2., 
+            yn - figLegendSize / 2., 
+            figLegendSize, 
+            figLegendSize]
 
     lgndax = il.inset_axes(
       ax, '100%', '100%', 
@@ -267,10 +265,9 @@ class abAlphaBetaMeshPlotter:
 
     lgndax.text(1.5 * np.pi, 0.20, r'$\alpha$', horizontalalignment='center', verticalalignment='center', fontsize=fontsize)
     lgndax.text(1.5 * np.pi, 0.70, r'$\beta$', horizontalalignment='center', verticalalignment='center', fontsize=fontsize)
-    lgndax.plot([0.5 * np.pi, 0.5 * np.pi], [0, 1], linewidth=2, color='k')
+    lgndax.plot([0.5 * np.pi, 0.5 * np.pi], [0, 1], linewidth=1, color='k')
     lgndax.text(0, 0.17, '0', fontsize=fontsize)
     lgndax.text(np.pi / 2. * (7. / 8.), 0.9, '1', fontsize=fontsize)
-    lgndax.plot(np.pi / 2., 0.99, marker='.', color='k')
 
     return lgndax
 
@@ -308,8 +305,18 @@ def plotLocalShadowFigure(abLocalFileName, abShadowFileName, mesh, dirs, nfreq, 
 
 
 def createMeshPlotterFromFile(abFileName, mesh, dirs, nfreq, ifreq=0, **kwargs):
+  """
+  Create a mesh plotter from an obstruction file.
+  """
   ldr = abWwiiiAlphaBetaLoader.abWwiiiAlphaBetaLoader(nfreq)
-  ab = ldr.load(abFileName)
+
+  lonlims = kwargs.get('lonlims', None)
+  if lonlims is not None:
+    lonlims = [lonlims[0] - 3, lonlims[1] + 3]
+  latlims = kwargs.get('latlims', None)
+  ab = ldr.load(abFileName, lonlims=lonlims, latlims=latlims)
+  if not ab.coords:
+    raise RuntimeError(f'No cell loaded from file {abFileName}. Check the file content and the provided lonlims/latlims.')
 
   alphaList = [a[ifreq, :] for a in ab.alphaList] 
   betaList = [b[ifreq, :] for b in ab.betaList] 

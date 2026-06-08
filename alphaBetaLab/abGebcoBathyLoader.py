@@ -30,7 +30,10 @@ def loadBathy(gbcFilePath, llcrnr = None, urcrnr = None):
       lon_[lon_ < 0] = lon_[lon_ < 0] + 360
       urcrnr_[0] = urcrnr_[0] + 360
     cndLon = np.logical_and(lon_ >= llcrnr[0], lon_ <= urcrnr_[0])
-    cndLat = np.logical_and(lat >= llcrnr[1], lat <= urcrnr_[1]) 
+    cndLat = np.logical_and(lat >= llcrnr[1], lat <= urcrnr_[1])
+    if not np.any(cndLon) or not np.any(cndLat):
+      return np.array([]), np.array([]), np.array([])
+
     lon = lon[cndLon]
     lat = lat[cndLat]
     z = ds.variables['elevation'][cndLat, cndLon]
